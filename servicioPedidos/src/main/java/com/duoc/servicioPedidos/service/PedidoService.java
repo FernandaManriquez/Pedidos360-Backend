@@ -1,5 +1,6 @@
 package com.duoc.servicioPedidos.service;
 
+import com.duoc.servicioPedidos.messaging.PedidoEventPublisher;
 import com.duoc.servicioPedidos.model.Pedido;
 import com.duoc.servicioPedidos.repository.PedidoRepository;
 
@@ -12,9 +13,14 @@ import java.util.Optional;
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
+    private final PedidoEventPublisher pedidoEventPublisher;
 
-    public PedidoService(PedidoRepository pedidoRepository) {
+    public PedidoService(
+            PedidoRepository pedidoRepository,
+            PedidoEventPublisher pedidoEventPublisher) {
+
         this.pedidoRepository = pedidoRepository;
+        this.pedidoEventPublisher = pedidoEventPublisher;
     }
 
     public List<Pedido> listar() {
@@ -30,13 +36,20 @@ public class PedidoService {
     }
 
     public Pedido crear(Pedido pedido) {
-        return pedidoRepository.save(pedido);
+
+        Pedido pedidoGuardado = pedidoRepository.save(pedido);
+
+        pedidoEventPublisher.publicarPedidoCreado(pedidoGuardado);
+
+        return pedidoGuardado;
     }
 
     public Pedido cambiarEstado(Long id, String estado) {
 
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+                .orElseThrow(
+                        () -> new RuntimeException("Pedido no encontrado")
+                );
 
         pedido.setEstado(estado);
 
