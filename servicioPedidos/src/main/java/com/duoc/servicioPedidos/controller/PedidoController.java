@@ -1,6 +1,7 @@
 package com.duoc.servicioPedidos.controller;
 
 import com.duoc.servicioPedidos.model.Pedido;
+import jakarta.validation.Valid;
 import com.duoc.servicioPedidos.service.PedidoService;
 
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<Pedido> crear(@RequestBody Pedido pedido) {
+    public ResponseEntity<Pedido> crear(@Valid @RequestBody Pedido pedido) {
 
         return ResponseEntity.ok(
                 pedidoService.crear(pedido)

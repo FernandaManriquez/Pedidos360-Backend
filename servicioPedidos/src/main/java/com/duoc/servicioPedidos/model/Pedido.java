@@ -1,6 +1,7 @@
 package com.duoc.servicioPedidos.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +21,20 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El usuario es obligatorio")
+    @Size(max = 150)
     private String usuario;
 
+    @NotNull(message = "El producto es obligatorio")
+    @Positive(message = "El producto debe ser positivo")
     private Long productoId;
 
+    @NotNull(message = "La cantidad es obligatoria")
+    @Positive(message = "La cantidad debe ser mayor que cero")
     private Integer cantidad;
 
+    @NotNull(message = "El total es obligatorio")
+    @PositiveOrZero(message = "El total no puede ser negativo")
     private Integer total;
 
     private String estado;

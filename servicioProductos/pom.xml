@@ -13,11 +13,11 @@
     </parent>
 
     <groupId>com.duoc</groupId>
-    <artifactId>servicioPedidos</artifactId>
+    <artifactId>servicioProductos</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>servicioPedidos</name>
-    <description>Microservicio de pedidos de Pedidos360</description>
+    <name>servicioProductos</name>
+    <description>Microservicio de productos de Pedidos360</description>
 
     <properties>
         <java.version>21</java.version>
