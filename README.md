@@ -1,143 +1,143 @@
-# Pedidos360 Backend
+# Pedidos360 Backend — EP3
 
-Backend de Pedidos360 desarrollado con Spring Boot y arquitectura de microservicios.
+Backend desarrollado con Java 21 y Spring Boot para gestionar productos y pedidos, con autenticación mediante Microsoft Entra ID y procesamiento de eventos con RabbitMQ.
 
-## Arquitectura
+## Estado de la entrega
 
-El backend está compuesto por tres aplicaciones:
+Se verificó el funcionamiento del frontend Angular y del backend en ejecución local, conectados a MariaDB alojada en AWS mediante un túnel SSH.
 
-- `bff`: puerto 8080.
-- `servicioProductos`: puerto 8081.
-- `servicioPedidos`: puerto 8082.
+RabbitMQ se ejecuta localmente en Docker. Su despliegue en AWS quedó pendiente con autorización del profesor, debido a los inconvenientes presentados en EC2.
 
-El BFF utiliza OpenFeign para comunicarse con los microservicios y reenvía el encabezado `Authorization` recibido desde el frontend. Los tres servicios validan JWT emitidos por Microsoft Entra ID.
+Las evidencias de la etapa anterior de despliegue están en [README_AWS_ETAPA_ANTERIOR.md](README_AWS_ETAPA_ANTERIOR.md). Corresponden a esa etapa y no representan el estado actual de ejecución.
 
-El flujo implementado es:
+## Aplicaciones
 
-`Frontend Angular → AWS API Gateway → BFF → Microservicios → MariaDB`
+| Aplicación | Puerto | Función |
+|---|---:|---|
+| bff | 8080 | Recibe solicitudes del frontend y consulta los microservicios mediante OpenFeign. |
+| servicioProductos | 8081 | Gestiona productos y su persistencia. |
+| servicioPedidos | 8082 | Gestiona pedidos y publica el evento de creación. |
+| servicioNotificaciones | 8083 | Consume eventos para generar tickets y notificaciones internas. |
+| servicioRabbitAdmin | 8084 | Administra colas, exchanges y bindings mediante una API REST. |
 
-## Tecnologías
+El frontend Angular se ejecuta en el puerto 4200. Las aplicaciones del backend validan JWT emitidos por Microsoft Entra ID.
 
-- Java 21
-- Spring Boot
-- Spring Security
-- OAuth 2.0 Resource Server
-- OpenFeign
-- JPA / Hibernate
-- MariaDB
-- Microsoft Entra ID
-- AWS EC2
-- AWS API Gateway
+## Flujo verificado
 
-## Endpoints
+1. El usuario inicia sesión en Angular mediante Microsoft Entra ID.
+2. Angular envía el JWT al BFF, que reenvía Authorization a los microservicios.
+3. Productos y Pedidos acceden a MariaDB en AWS.
+4. Al crear un pedido, Pedidos guarda sus datos y publica un evento en RabbitMQ.
+5. El exchange entrega el evento a las colas de tickets y notificaciones.
+6. Cada consumidor genera su archivo y envía un ACK al terminar correctamente.
+
+## RabbitMQ
+
+La configuración declara beans de Queue, Exchange y Binding, con nombres centralizados mediante propiedades y separación entre configuración y lógica de negocio.
+
+| Elemento | Nombre |
+|---|---|
+| Exchange de eventos | pedidos360.eventos |
+| Routing key de creación | pedido.creado |
+| Cola de tickets | pedidos360.tickets |
+| Cola de notificaciones | pedidos360.notificaciones |
+| Exchange de mensajes rechazados | pedidos360.dlx |
+| DLQ de tickets | pedidos360.tickets.dlq |
+| DLQ de notificaciones | pedidos360.notificaciones.dlq |
+
+Los consumidores utilizan @RabbitListener y confirmación manual. Los eventos inválidos se rechazan sin reencolarlos y se dirigen a su DLQ. Los errores de escritura tienen intentos limitados; si se agotan, el mensaje también se envía a la DLQ.
+
+Los archivos se generan dentro de servicioNotificaciones:
+
+- output/tickets/<eventId>.txt
+- output/notificaciones/<eventId>.txt
+
+## API REST
+
+Los endpoints requieren un JWT válido.
 
 ### Productos
 
-- `GET /api/productos`
-- `POST /api/productos`
-- `GET /api/productos/{id}`
-- `PUT /api/productos/{id}`
-- `DELETE /api/productos/{id}`
+- GET /api/productos
+- POST /api/productos
+- GET /api/productos/{id}
+- PUT /api/productos/{id}
+- DELETE /api/productos/{id}
 
 ### Pedidos
 
-- `GET /api/pedidos`
-- `POST /api/pedidos`
-- `GET /api/pedidos/{id}`
-- `GET /api/pedidos/usuario/{usuario}`
-- `PUT /api/pedidos/{id}/estado`
-- `DELETE /api/pedidos/{id}`
+- GET /api/pedidos
+- POST /api/pedidos
+- GET /api/pedidos/{id}
+- GET /api/pedidos/usuario/{usuario}
+- PUT /api/pedidos/{id}/estado
+- DELETE /api/pedidos/{id}
 
-## Variables de entorno
+La creación valida usuario obligatorio, producto positivo, cantidad mayor que cero y total no negativo.
 
-Los servicios utilizan variables de entorno para evitar guardar credenciales en el repositorio.
+### Administración de RabbitMQ — puerto 8084
 
-### Todos los servicios
+- POST /api/rabbit/queues
+- GET /api/rabbit/queues/{name}
+- DELETE /api/rabbit/queues/{name}
+- POST /api/rabbit/exchanges
+- DELETE /api/rabbit/exchanges/{name}
+- POST /api/rabbit/bindings
+- DELETE /api/rabbit/bindings
 
-```text
-AZURE_ISSUER_URI=https://login.microsoftonline.com/<TENANT_ID>/v2.0
-```
+El controlador delega las operaciones en RabbitAdminService. Se validan los datos de entrada antes de administrar los recursos.
 
-### Servicio de Productos y Servicio de Pedidos
+## Configuración y ejecución local
 
-```text
-DB_URL=jdbc:mysql://localhost:3306/pedidos360
-DB_USERNAME=<usuario>
-DB_PASSWORD=<contraseña>
-```
+Requisitos: Java 21, Docker con RabbitMQ y acceso a MariaDB.
 
-### BFF
+Configurar AZURE_ISSUER_URI en cada aplicación:
 
-```text
-PEDIDOS_SERVICE_URL=http://localhost:8082
-PRODUCTOS_SERVICE_URL=http://localhost:8081
-CORS_ALLOWED_ORIGIN=http://localhost:4200
-```
+    AZURE_ISSUER_URI=https://login.microsoftonline.com/<TENANT_ID>/v2.0
 
-## Ejecución local
+Productos y Pedidos requieren además:
 
-Iniciar cada aplicación desde su carpeta:
+    DB_URL=jdbc:mysql://127.0.0.1:3307/pedidos360
+    DB_USERNAME=<usuario>
+    DB_PASSWORD=<contraseña>
 
-```bash
-./mvnw spring-boot:run
-```
+La URL anterior corresponde al túnel SSH utilizado en las pruebas: puerto local 3307 hacia MariaDB en EC2, puerto 3306.
 
-Orden recomendado:
+El BFF utiliza las siguientes direcciones locales:
 
-1. `servicioProductos`
-2. `servicioPedidos`
-3. `bff`
+    PEDIDOS_SERVICE_URL=http://localhost:8082
+    PRODUCTOS_SERVICE_URL=http://localhost:8081
+    CORS_ALLOWED_ORIGIN=http://localhost:4200
 
-## Seguridad y autenticación
+RabbitMQ utiliza localhost:5672. Su panel de administración está en http://localhost:15672.
 
-La autenticación se realiza con Microsoft Entra ID. El frontend obtiene un JWT mediante OAuth 2.0/OpenID Connect y lo envía a AWS API Gateway. API Gateway valida el token antes de reenviar la solicitud al BFF. El BFF y los microservicios también validan el JWT como defensa en profundidad.
+Con RabbitMQ y el túnel SSH activos, iniciar cada aplicación en una terminal independiente desde su propia carpeta:
 
-## Despliegue e integración en AWS
+    ./mvnw spring-boot:run
 
-El backend fue desplegado en una instancia AWS EC2. Los tres servicios se ejecutan mediante `systemd` y AWS API Gateway funciona como punto de entrada público hacia el BFF.
+Orden recomendado: servicioProductos, servicioNotificaciones, servicioPedidos, servicioRabbitAdmin y bff.
 
-A continuación se presentan las evidencias de configuración y funcionamiento.
+El frontend debe apuntar a http://localhost:8080 y ejecutarse desde su repositorio mediante npm start.
 
-### Rutas configuradas en API Gateway
+## Pruebas realizadas
 
-AWS API Gateway fue utilizado como API Manager del sistema. Se configuraron las rutas necesarias para productos y pedidos, utilizando los métodos GET, POST, PUT y DELETE.
+- Creación de un pedido desde Angular.
+- Generación del ticket y de la notificación interna con el mismo eventId.
+- Confirmaciones ACK de ambos consumidores visibles en los registros.
+- Envío de mensajes inválidos a las DLQ.
+- Creación, consulta y eliminación de recursos de prueba mediante la API de administración.
+- Respuestas 400 ante nombre de cola vacío y tipo de exchange inválido.
+- Respuesta 400 al intentar crear un pedido con cantidad cero.
+- Compilación y empaquetado de servicioPedidos con ./mvnw -DskipTests package. Este comando no ejecuta pruebas automatizadas.
 
-![Rutas configuradas en API Gateway] <img width="2048" height="1030" alt="api-gateway-rutas" src="https://github.com/user-attachments/assets/4c8332b0-90d1-4484-8c09-b5bd7b558c67" />
+## Alcance y pendientes
 
+El despliegue de RabbitMQ en AWS permanece pendiente con autorización del profesor.
 
-### Integración con el BFF desplegado en EC2
+El guardado del pedido y la publicación del evento son operaciones separadas; no se implementó un mecanismo outbox de recuperación.
 
-Las rutas del API Gateway se encuentran asociadas a una integración HTTP que dirige las solicitudes hacia el BFF desplegado en la instancia EC2.
+La validación del total comprueba que no sea negativo; no recalcula el precio desde el catálogo.
 
-![Integración API Gateway con BFF] <img width="2048" height="1064" alt="api-gateway-integracion" src="https://github.com/user-attachments/assets/7bc6c43b-9923-4dca-81f0-dfe974701ed9" />
+Las contraseñas, tokens y claves privadas deben configurarse fuera del repositorio.
 
-
-### Protección mediante JWT
-
-Se configuró el autorizador `Pedidos360-JWT` en API Gateway. El token es recibido mediante el encabezado `Authorization` y se valida utilizando Microsoft Entra ID como proveedor de identidad.
-
-![Autorizador JWT] <img width="2048" height="902" alt="api-gateway-jwt" src="https://github.com/user-attachments/assets/372570fb-4b0e-40b9-a069-67c1df9f8ce6" />
-
-
-### Prueba de acceso sin token
-
-Al realizar una solicitud directamente al API Gateway sin enviar un JWT válido, el servicio responde con `HTTP 401 Unauthorized`, demostrando que las rutas protegidas no permiten acceso anónimo.
-
-![Respuesta 401 Unauthorized] <img width="2048" height="660" alt="jwt-401-unauthorized" src="https://github.com/user-attachments/assets/1f4ab5dd-5152-4fa6-9fd6-6d4a5a1642ce" />
-
-
-### Servicios activos en EC2
-
-El BFF y los dos microservicios fueron configurados como servicios del sistema en la instancia EC2.
-
-![Servicios activos en EC2] <img width="2048" height="705" alt="ec2-servicios-activos" src="https://github.com/user-attachments/assets/59ab8956-8402-48d5-a765-5b30080c8456" />
-
-
-Servicios verificados:
-
-- `pedidos360-bff`
-- `pedidos360-productos`
-- `pedidos360-pedidos`
-
-Los tres servicios se encuentran activos y permiten que API Gateway se comunique correctamente con el backend.
-
+Más detalles de la integración en [README_EP3.md](README_EP3.md).
