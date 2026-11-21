@@ -4,6 +4,7 @@ import com.duoc.servicioPedidos.model.Pedido;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,22 +17,23 @@ public class PedidoEventPublisher {
             LoggerFactory.getLogger(PedidoEventPublisher.class);
 
     private final RabbitTemplate rabbitTemplate;
+    private final ObjectProvider<PedidoKafkaPublisher> kafkaPublisher;
     private final String exchange;
     private final String routingKey;
 
     public PedidoEventPublisher(
             RabbitTemplate rabbitTemplate,
+            ObjectProvider<PedidoKafkaPublisher> kafkaPublisher,
             @Value("${app.rabbitmq.exchange}") String exchange,
-            @Value("${app.rabbitmq.pedido-creado-routing-key}")
-            String routingKey) {
+            @Value("${app.rabbitmq.pedido-creado-routing-key}") String routingKey) {
 
         this.rabbitTemplate = rabbitTemplate;
+        this.kafkaPublisher = kafkaPublisher;
         this.exchange = exchange;
         this.routingKey = routingKey;
     }
 
     public void publicarPedidoCreado(Pedido pedido) {
-
         PedidoCreadoEvent evento = new PedidoCreadoEvent(
                 UUID.randomUUID().toString(),
                 pedido.getId(),
@@ -43,16 +45,14 @@ public class PedidoEventPublisher {
                 pedido.getFecha()
         );
 
-        rabbitTemplate.convertAndSend(
-                exchange,
-                routingKey,
-                evento
-        );
+        rabbitTemplate.convertAndSend(exchange, routingKey, evento);
 
         log.info(
                 "Publicacion enviada: eventId={}, pedidoId={}",
                 evento.eventId(),
                 evento.pedidoId()
         );
+
+        kafkaPublisher.ifAvailable(publicador -> publicador.publicar(evento));
     }
 }
