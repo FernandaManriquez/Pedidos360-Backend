@@ -10,13 +10,13 @@ Se contrastaron las pautas EP5 (encargo, 12% de la asignatura) y EP6 (presentaci
 |---|---:|---|
 | Configuración de clientes Kafka | 12% | Bootstrap de tres brokers; serializers/deserializers, grupos, acks e idempotencia configurados; publicación y consumo observados. |
 | Productores y consumidores de dos tópicos con DTO | 12% | Pipeline pedido-creado → evaluación → alertas → registro observado. |
-| Administrador de componentes Kafka | 6% | Creación, listado, consulta y eliminación; falta actualización de configuraciones existentes exigida en las instrucciones específicas. |
+| Administrador de componentes Kafka | 6% | Creacion, listado, consulta, actualizacion de retencion y cleanup, y eliminacion implementados. PATCH probado con consulta antes/despues y rechazo de retencion invalida. |
 | Productores y serializers | 14% | Productor de pedidos y productor de alertas probados; no hay outbox ni atomicidad con la base de datos. |
 | Consumidores y separación de dominio | 14% | Listeners separados de PedidoAlertaService y AlertaAuditoriaService; procesamiento normal observado. |
 | Manejo de errores | 12% | Validación y detención por registro inválido probadas. Reintentos configurados; agotamiento por fallo transitorio sin prueba registrada. El listener detenido requiere intervención. |
 | Retención, cleanup, particiones y réplicas | 12% | Dos tópicos P3/RF3, minISR2; retenciones 7 y 28 días y política delete inspeccionadas. |
 | Consumer groups y distribución resiliente | 12% | Dos instancias con reparto 2+1; tras parada controlada, una asumió las tres particiones. No prueba caída abrupta de broker o equipo. |
-| Operaciones repetibles sobre tópicos y grupos | 6% | API de creación/inspección/eliminación y CLI de grupos utilizadas. Actualización de configuraciones aún no implementada en la API. |
+| Operaciones repetibles sobre tópicos y grupos | 6% | API de creación/inspección/eliminación y CLI de grupos utilizadas. Actualizacion de retencion y cleanup mediante PATCH probada sobre un topico temporal. |
 
 ## Presentación EP6
 
@@ -28,7 +28,7 @@ Se contrastaron las pautas EP5 (encargo, 12% de la asignatura) y EP6 (presentaci
 | Flujo de producción y consumo | 12% | Relacionar evento de pedido, regla total >10000, alerta ALTA y recepción de auditoría. |
 | Estructura de eventos | 6% | Explicar eventId, pedidoId como clave, datos de negocio y fecha. |
 | Reacción a eventos | 12% | Contrastar caso sin alerta con alerta; pedido real 9 y su correlación. |
-| Administración de Kafka | 15% | Particiones, RF3, minISR2, acks, retención, cleanup y grupos. Reconocer actualización de configuración no implementada. |
+| Administración de Kafka | 15% | Particiones, RF3, minISR2, acks, retención, cleanup y grupos. Explicar la actualizacion de retencion y cleanup mediante PATCH y su validacion. |
 | Supervisión | 15% | CURRENT-OFFSET, LOG-END-OFFSET, LAG y distribución de miembros. |
 | Casos de uso y configuración | 15% | Pedido para evaluación; alerta para revisión; grupos independientes y distinta retención. |
 
@@ -48,7 +48,7 @@ La presentación debe durar entre cinco y diez minutos. Aunque se realiza en gru
 | Docker Compose de clúster RabbitMQ | Compose de dos nodos ejecutado localmente; conservo cluster, consumidores y mensajes. |
 | Docker Compose de Kafka y Kafka UI | Implementado y ejecutado localmente. |
 | Compose RabbitMQ o Kafka en cloud | No ejecutado en el entorno cloud verificado. |
-| Administración de actualización de tópicos | Falta operación de actualización de configuraciones existentes. |
+| Administración de actualización de tópicos | Implementada y probada: PATCH autenticado para retencion y cleanup; evidencia antes/despues. |
 | Código completo del backend compilado | Se registraron compilaciones de componentes modificados; no se afirma una ejecución nueva y conjunta de todos los módulos. |
 
 ## Evidencias y trazabilidad
@@ -74,7 +74,7 @@ Documentar una limitación no convierte un criterio pendiente en cumplido ni imp
 ## Acciones de cierre
 
 1. Mantener separadas las evidencias locales de Kafka EA3 y las consultas al backend anterior en AWS.
-2. Resolver, si se continúa el desarrollo técnico, la actualización de configuraciones Kafka y verificarla con consulta antes/después.
+2. Incorporar al informe y presentacion la actualizacion Kafka ya verificada mediante PATCH y consulta antes/despues.
 3. Actualizar informe y presentacion con las nuevas evidencias RabbitMQ de dos nodos y tres colas con DLQ.
 4. Incorporar capturas seleccionadas al informe sin tokens ni contraseñas visibles.
 5. Preparar una presentación de cinco a diez minutos con participación de ambas integrantes.

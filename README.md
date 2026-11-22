@@ -91,7 +91,7 @@ Todas las solicitudes requieren JWT. La API actual no distingue un rol administr
 | GET | /api/kafka/groups/{grupo} | Consultar estado, miembros, asignaciones y offsets confirmados. |
 | DELETE | /api/kafka/groups/{grupo} | Eliminar un grupo sin miembros activos. |
 
-La actualización de configuración de tópicos existentes no está implementada en esta API. El lag se inspeccionó mediante CLI; la consulta de grupos de la API no calcula el lag.
+La API permite actualizar retencion y politica de limpieza mediante PATCH /api/kafka/topics/{nombre}/config. Operacion y pruebas documentadas en docs/KAFKA_CONFIG.md. El lag se inspeccionó mediante CLI; la consulta de grupos de la API no calcula el lag.
 
 Se verificaron: 401 sin JWT; consulta 200; creación 201; eliminación 204; tópico inexistente 404; entrada inválida 400; eliminación de grupo activo 409; eliminación de grupo de prueba inactivo 204.
 
