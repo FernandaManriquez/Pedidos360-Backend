@@ -46,6 +46,15 @@ public class ProcesamientoPedidoService {
         );
     }
 
+    public void registrarAuditoria(PedidoCreadoEvent evento)
+            throws IOException {
+        guardarDocumento(
+                evento,
+                "auditoria",
+                "AUDITORIA DE PEDIDO CREADO"
+        );
+    }
+
     private void guardarDocumento(
             PedidoCreadoEvent evento,
             String subdirectorio,

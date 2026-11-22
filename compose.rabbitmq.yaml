@@ -1,0 +1,57 @@
+name: pedidos360-ea3-rabbit
+
+x-rabbit-common: &rabbit-common
+  image: ${RABBITMQ_IMAGE:-rabbitmq:4.2-management}
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+    interval: 5s
+    timeout: 10s
+    retries: 12
+    start_period: 15s
+
+services:
+  rabbit1:
+    <<: *rabbit-common
+    container_name: rabbitmq
+    hostname: ${RABBITMQ_PRIMARY_HOST:?Falta hostname}
+    environment:
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:?Falta cookie}
+      RABBITMQ_NODENAME: rabbit@${RABBITMQ_PRIMARY_HOST}
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    volumes:
+      - rabbit1_data:/var/lib/rabbitmq
+    networks:
+      rabbit:
+        aliases:
+          - ${RABBITMQ_PRIMARY_HOST}
+
+  rabbit2:
+    <<: *rabbit-common
+    container_name: pedidos360-rabbit2
+    hostname: pedidos360-rabbit2
+    environment:
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:?Falta cookie}
+      RABBITMQ_NODENAME: rabbit@pedidos360-rabbit2
+    ports:
+      - "127.0.0.1:5673:5672"
+      - "127.0.0.1:15673:15672"
+    volumes:
+      - rabbit2_data:/var/lib/rabbitmq
+    networks:
+      - rabbit
+
+volumes:
+  rabbit1_data:
+    external: true
+    name: ${RABBITMQ_PRIMARY_VOLUME:?Falta volumen principal}
+  rabbit2_data:
+    external: true
+    name: ${RABBITMQ_SECONDARY_VOLUME:?Falta volumen secundario}
+
+networks:
+  rabbit:
+    external: true
+    name: ${RABBITMQ_NETWORK:?Falta red}

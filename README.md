@@ -2,7 +2,7 @@
 
 Backend Java 21 y Spring Boot. Integra productos y pedidos, Microsoft Entra ID, MariaDB en AWS, RabbitMQ y un pipeline Kafka de alertas.
 
-Rama de entrega: `feature/ea3-kafka`. Estado documentado al 21 de noviembre de 2026. El código y las pruebas locales de esta rama deben distinguirse de los JAR anteriores que actualmente ejecuta EC2.
+Rama de entrega: `feature/ea3-kafka`. Estado documentado al 22 de noviembre de 2026. El código y las pruebas locales de esta rama deben distinguirse de los JAR anteriores que actualmente ejecuta EC2.
 
 ## Estado verificado
 
@@ -12,7 +12,7 @@ Rama de entrega: `feature/ea3-kafka`. Estado documentado al 21 de noviembre de 2
 | BFF, Productos y Pedidos | Servicios anteriores activos en EC2; consultas de productos y pedidos mediante API Gateway con HTTP 200. |
 | Angular | Ejecución local; perfil AWS autenticado contra API Gateway. |
 | Kafka EA3 | Docker local: tres ZooKeeper, tres brokers y Kafka UI. |
-| RabbitMQ | Docker local: un nodo, dos colas funcionales y sus dos DLQ. |
+| RabbitMQ | Docker Compose local: dos nodos, tres colas funcionales y sus tres DLQ; exchanges direct y topic. |
 | Administrador Kafka | Implementado y probado localmente con JWT. |
 | Frontend alojado en AWS | Bucket S3 creado; intento CloudFront bloqueado por permiso IAM de creación de OAC. |
 
@@ -75,7 +75,7 @@ Se conserva el flujo de tickets y notificaciones de la etapa anterior.
 | DLX | pedidos360.dlx |
 | DLQ | pedidos360.tickets.dlq; pedidos360.notificaciones.dlq |
 
-Los archivos se generan en `servicioNotificaciones/output/tickets/<eventId>.txt` y `output/notificaciones/<eventId>.txt`. El pedido 9 produjo ambos archivos con datos coherentes. El estado local actual de un nodo y dos colas no satisface el requisito de dos nodos y tres colas con sus respectivas DLQ.
+Los archivos se generan en `servicioNotificaciones/output/tickets/<eventId>.txt` y `output/notificaciones/<eventId>.txt`. El pedido 9 produjo ambos archivos con datos coherentes. El 22 de noviembre se verificaron dos nodos en Compose, tres colas funcionales y sus tres DLQ. Auditoria genera un tercer archivo por evento mediante un exchange topic. Configuracion y pruebas en docs/RABBITMQ_CLUSTER.md.
 
 ## Administración Kafka
 

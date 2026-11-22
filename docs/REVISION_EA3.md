@@ -1,6 +1,6 @@
 # Revisión de alcance EA3
 
-Fecha de corte: 21 de noviembre de 2026.
+Fecha de corte: 22 de noviembre de 2026.
 
 Se contrastaron las pautas EP5 (encargo, 12% de la asignatura) y EP6 (presentación, 18%). Los porcentajes siguientes son ponderaciones oficiales por indicador, no una nota asignada al proyecto. Una implementación o configuración no sustituye una evidencia de ejecución.
 
@@ -42,10 +42,10 @@ La presentación debe durar entre cinco y diez minutos. Aunque se realiza en gru
 | Login IDaaS y JWT | Entra ID y frontend local; API Gateway 401 sin JWT y 200 con JWT válido. |
 | Frontend consumiendo API Manager | Verificado desde localhost hacia API Gateway para productos y pedidos. |
 | Frontend y backend desplegados e integrados en cloud | Parcial. Backend anterior activo en EC2; frontend local. S3 creado; CloudFront privado bloqueado por IAM. |
-| Dos nodos RabbitMQ en clúster | No cubierto: existe un nodo local. |
-| Tres colas y sus tres DLQ | No cubierto: dos colas de negocio y sus dos DLQ. |
-| Exchanges direct y topic | Requiere comprobar y documentar ambos tipos en el estado final; no se acredita aquí la exigencia completa. |
-| Docker Compose de clúster RabbitMQ | No se acredita un Compose operativo de dos nodos. |
+| Dos nodos RabbitMQ en clúster | Verificado localmente: dos nodos activos mediante Docker Compose. |
+| Tres colas y sus tres DLQ | Verificadas tres colas funcionales, tres consumidores y tres DLQ; pruebas validas e invalidas registradas. |
+| Exchanges direct y topic | Verificados exchanges direct y topic, con bindings funcionales hacia tickets, notificaciones y auditoria. |
+| Docker Compose de clúster RabbitMQ | Compose de dos nodos ejecutado localmente; conservo cluster, consumidores y mensajes. |
 | Docker Compose de Kafka y Kafka UI | Implementado y ejecutado localmente. |
 | Compose RabbitMQ o Kafka en cloud | No ejecutado en el entorno cloud verificado. |
 | Administración de actualización de tópicos | Falta operación de actualización de configuraciones existentes. |
@@ -75,7 +75,7 @@ Documentar una limitación no convierte un criterio pendiente en cumplido ni imp
 
 1. Mantener separadas las evidencias locales de Kafka EA3 y las consultas al backend anterior en AWS.
 2. Resolver, si se continúa el desarrollo técnico, la actualización de configuraciones Kafka y verificarla con consulta antes/después.
-3. Resolver o declarar expresamente la diferencia RabbitMQ de un nodo/dos colas frente a dos nodos/tres colas.
+3. Actualizar informe y presentacion con las nuevas evidencias RabbitMQ de dos nodos y tres colas con DLQ.
 4. Incorporar capturas seleccionadas al informe sin tokens ni contraseñas visibles.
 5. Preparar una presentación de cinco a diez minutos con participación de ambas integrantes.
 6. Entregar enlaces de la rama feature/ea3-kafka, informe, presentación y video según las instrucciones docentes recibidas.

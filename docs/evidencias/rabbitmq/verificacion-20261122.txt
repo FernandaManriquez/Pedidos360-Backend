@@ -1,0 +1,137 @@
+﻿PEDIDOS360 - VERIFICACION RABBITMQ
+Fecha de captura: 2026-11-22 19:06:00
+Entorno: Docker local
+Prueba sintetica mediante HTTP API; no crea pedidos en MariaDB.
+Evento valido: e7bfdfb5-2be6-4ccf-ab40-5059c63e7060
+Evento invalido: a2488ef0-f55b-4b37-acc4-e312a0a002bd
+
+Cluster status of node rabbit@a1a5f92f7e92 ...
+Basics
+
+Cluster name: rabbit@a1a5f92f7e92
+Total CPU cores available cluster-wide: 40
+
+Cluster Tags
+
+(none)
+
+Disk Nodes
+
+rabbit@a1a5f92f7e92
+rabbit@pedidos360-rabbit2
+
+Running Nodes
+
+rabbit@a1a5f92f7e92
+rabbit@pedidos360-rabbit2
+
+Versions
+
+rabbit@a1a5f92f7e92: RabbitMQ 4.2.9 on Erlang 27.3.4.18
+rabbit@pedidos360-rabbit2: RabbitMQ 4.2.9 on Erlang 27.3.4.18
+
+CPU Cores
+
+Node: rabbit@a1a5f92f7e92, available CPU cores: 20
+Node: rabbit@pedidos360-rabbit2, available CPU cores: 20
+
+Maintenance status
+
+Node: rabbit@a1a5f92f7e92, status: not under maintenance
+Node: rabbit@pedidos360-rabbit2, status: not under maintenance
+
+Alarms
+
+(none)
+
+Network Partitions
+
+(none)
+
+Listeners
+
+Node: rabbit@a1a5f92f7e92, interface: [::], port: 15672, protocol: http, purpose: HTTP API
+Node: rabbit@a1a5f92f7e92, interface: [::], port: 15692, protocol: http/prometheus, purpose: Prometheus exporter API over HTTP
+Node: rabbit@a1a5f92f7e92, interface: [::], port: 25672, protocol: clustering, purpose: inter-node and CLI tool communication
+Node: rabbit@a1a5f92f7e92, interface: [::], port: 5672, protocol: amqp, purpose: AMQP 0-9-1 and AMQP 1.0
+Node: rabbit@pedidos360-rabbit2, interface: [::], port: 15672, protocol: http, purpose: HTTP API
+Node: rabbit@pedidos360-rabbit2, interface: [::], port: 15692, protocol: http/prometheus, purpose: Prometheus exporter API over HTTP
+Node: rabbit@pedidos360-rabbit2, interface: [::], port: 25672, protocol: clustering, purpose: inter-node and CLI tool communication
+Node: rabbit@pedidos360-rabbit2, interface: [::], port: 5672, protocol: amqp, purpose: AMQP 0-9-1 and AMQP 1.0
+
+Feature flags
+
+Flag: classic_mirrored_queue_version, state: enabled
+Flag: classic_queue_type_delivery_support, state: enabled
+Flag: detailed_queues_endpoint, state: enabled
+Flag: direct_exchange_routing_v2, state: enabled
+Flag: drop_unroutable_metric, state: enabled
+Flag: empty_basic_get_metric, state: enabled
+Flag: feature_flags_v2, state: enabled
+Flag: implicit_default_bindings, state: enabled
+Flag: khepri_db, state: enabled
+Flag: listener_records_in_ets, state: enabled
+Flag: maintenance_mode_status, state: enabled
+Flag: message_containers, state: enabled
+Flag: message_containers_deaths_v2, state: enabled
+Flag: quorum_queue, state: enabled
+Flag: quorum_queue_non_voters, state: enabled
+Flag: rabbit_exchange_type_local_random, state: enabled
+Flag: rabbitmq_4.0.0, state: enabled
+Flag: rabbitmq_4.1.0, state: enabled
+Flag: rabbitmq_4.2.0, state: enabled
+Flag: restart_streams, state: enabled
+Flag: stream_filtering, state: enabled
+Flag: stream_queue, state: enabled
+Flag: stream_sac_coordinator_unblock_group, state: enabled
+Flag: stream_single_active_consumer, state: enabled
+Flag: stream_update_config_command, state: enabled
+Flag: tracking_records_in_ets, state: enabled
+Flag: user_limits, state: enabled
+Flag: virtual_host_metadata, state: enabled
+Timeout: 60.0 seconds ...
+Listing queues for vhost / ...
+name	messages	consumers
+pedidos360.notificaciones.dlq	2	0
+pedidos360.auditoria.dlq	1	0
+pedidos360.tickets	0	1
+all_logs_queue	0	0
+pedidos360.auditoria	0	1
+pedidos360.notificaciones	0	1
+errors_only_queue	0	0
+pedidos360.tickets.dlq	2	0
+Listing exchanges for vhost / ...
+name	type
+	direct
+amq.direct	direct
+amq.fanout	fanout
+amq.headers	headers
+amq.match	headers
+amq.rabbitmq.log	topic
+amq.rabbitmq.trace	topic
+amq.topic	topic
+logs_direct_exchange	direct
+pedidos360.auditoria.eventos	topic
+pedidos360.dlx	direct
+pedidos360.eventos	direct
+Listing bindings for vhost /...
+source_name	destination_name	routing_key
+	pedidos360.notificaciones.dlq	pedidos360.notificaciones.dlq
+	pedidos360.auditoria.dlq	pedidos360.auditoria.dlq
+	pedidos360.tickets	pedidos360.tickets
+	all_logs_queue	all_logs_queue
+	pedidos360.auditoria	pedidos360.auditoria
+	pedidos360.notificaciones	pedidos360.notificaciones
+	errors_only_queue	errors_only_queue
+	pedidos360.tickets.dlq	pedidos360.tickets.dlq
+pedidos360.eventos	pedidos360.notificaciones	pedido.creado
+logs_direct_exchange	all_logs_queue	WARNING
+pedidos360.auditoria.eventos	pedidos360.auditoria	pedido.*
+pedidos360.eventos	pedidos360.auditoria.eventos	pedido.creado
+pedidos360.dlx	pedidos360.tickets.dlq	tickets.dead
+pedidos360.eventos	pedidos360.tickets	pedido.creado
+pedidos360.dlx	pedidos360.auditoria.dlq	auditoria.dead
+logs_direct_exchange	errors_only_queue	ERROR
+pedidos360.dlx	pedidos360.notificaciones.dlq	notificaciones.dead
+logs_direct_exchange	all_logs_queue	INFO
+logs_direct_exchange	all_logs_queue	ERROR
