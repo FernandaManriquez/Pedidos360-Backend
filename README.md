@@ -57,11 +57,22 @@ Dentro de un mismo grupo las particiones se reparten entre instancias. Los grupo
 
 ### Productores y errores
 
-Los productores utilizan clave String, serialización JSON tipada, `acks=all` e idempotencia habilitada. El consumidor usa deserialización JSON con `ErrorHandlingDeserializer`, confirmación por registro y auto-commit desactivado.
+Los productores utilizan clave String, JSON tipado, acks=all e idempotencia habilitada.
+Los consumidores utilizan ErrorHandlingDeserializer, confirmacion por registro y auto-commit desactivado.
 
-El manejador configura tres reintentos con espera de un segundo para errores recuperables. Los errores de validación y deserialización no se reintentan. Al no poder procesar un registro se detiene el listener afectado y no se confirma ese registro. Esta estrategia conserva la posición del fallo, pero interrumpe ese flujo hasta la intervención del operador; no es una solución de continuidad automática ni una DLT.
+El manejador configura tres reintentos adicionales separados por un segundo para errores recuperables.
+Los errores de validacion y deserializacion pasan directamente a una DLT.
+Se agregan pedidos360.pedido-creado.DLT y pedidos360.alertas.DLT, configuradas con tres particiones,
+tres replicas, minISR2, retencion de 28 dias y politica delete.
 
-Se comprobó la detención ante un total negativo y el lag resultante. El agotamiento de los reintentos por fallo transitorio aún no cuenta con una prueba registrada. La recuperación de la prueba inválida se hizo avanzando explícitamente el offset del registro de ensayo; no debe aplicarse indiscriminadamente a pedidos reales.
+La recuperacion exige confirmacion del envio a la DLT antes de permitir el avance del offset.
+Si ese envio falla, el registro no se considera recuperado.
+La DLT conserva el rechazo para revision; no implementa reprocesamiento automatico.
+
+Se verificaron un pedido con total negativo, JSON malformado y una alerta invalida en las DLT.
+Los eventos validos posteriores se procesaron sin detener los consumidores.
+El agotamiento de reintentos por fallo transitorio sigue sin una prueba registrada.
+Configuracion y resultados: [Kafka DLT](docs/KAFKA_DLT.md).
 
 ## RabbitMQ
 

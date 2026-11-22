@@ -1,0 +1,28 @@
+PRUEBA DLT Y CONTINUIDAD - 2026-11-22 19:45:30
+Entorno local. Eventos sinteticos, sin pedidos nuevos en MariaDB.
+Pedido invalido: 1bd48a6b-ccd0-47f2-b216-8b18ef6e8c4e
+JSON malformado: 290f85c0-c8fa-4208-bd73-bab1d631c7ad
+Pedido valido posterior: 5406faa2-1983-46b4-b4d4-1413c47c5770
+Alerta invalida: 12ec3a42-d792-40af-93af-514f4697c618
+Alerta valida posterior: 0a2d6f1f-2338-45b3-ae6a-ac9c4cf6bb7e
+
+DLT PEDIDOS:
+Partition:2	Offset:0	900201	{"eventId":"1bd48a6b-ccd0-47f2-b216-8b18ef6e8c4e","pedidoId":900201,"usuario":"prueba.dlt","productoId":3,"cantidad":1,"total":-1,"estado":"PENDIENTE","fecha":"2026-11-22T19:45:07"}
+Partition:2	Offset:1	900201	{"prueba":"290f85c0-c8fa-4208-bd73-bab1d631c7ad"
+DLT ALERTAS:
+Partition:2	Offset:0	900202	{"eventId":"12ec3a42-d792-40af-93af-514f4697c618","pedidoId":900202,"total":15000,"severidad":"BAJA"}
+PROCESAMIENTO POSTERIOR:
+2026-11-22T19:45:09.323-03:00  INFO 29104 --- [servicioNotificaciones] [-listener-0-C-1] c.d.s.AlertaKafkaConsumer                : Alerta recibida: eventId=5406faa2-1983-46b4-b4d4-1413c47c5770, pedidoId=900201, total=15000, severidad=ALTA, particion=2, offset=2
+2026-11-22T19:45:10.009-03:00  INFO 29104 --- [servicioNotificaciones] [-listener-0-C-1] c.d.s.AlertaKafkaConsumer                : Alerta recibida: eventId=0a2d6f1f-2338-45b3-ae6a-ac9c4cf6bb7e, pedidoId=900202, total=15000, severidad=ALTA, particion=2, offset=4
+GRUPOS:
+
+GROUP                  TOPIC                    PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                            HOST            CLIENT-ID
+pedidos360-alertas-ea3 pedidos360.pedido-creado 0          2               2               0               consumer-pedidos360-alertas-ea3-2-92e2ca2a-a0cd-4800-a1c9-27ee5768736a /172.21.0.1     consumer-pedidos360-alertas-ea3-2
+pedidos360-alertas-ea3 pedidos360.pedido-creado 1          1               1               0               consumer-pedidos360-alertas-ea3-2-92e2ca2a-a0cd-4800-a1c9-27ee5768736a /172.21.0.1     consumer-pedidos360-alertas-ea3-2
+pedidos360-alertas-ea3 pedidos360.pedido-creado 2          5               5               0               consumer-pedidos360-alertas-ea3-2-92e2ca2a-a0cd-4800-a1c9-27ee5768736a /172.21.0.1     consumer-pedidos360-alertas-ea3-2
+
+GROUP                    TOPIC              PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                              HOST            CLIENT-ID
+pedidos360-auditoria-ea3 pedidos360.alertas 0          1               1               0               consumer-pedidos360-auditoria-ea3-1-bd307755-1eb6-428f-b161-cd20ee6e9dea /172.21.0.1     consumer-pedidos360-auditoria-ea3-1
+pedidos360-auditoria-ea3 pedidos360.alertas 1          -               0               -               consumer-pedidos360-auditoria-ea3-1-bd307755-1eb6-428f-b161-cd20ee6e9dea /172.21.0.1     consumer-pedidos360-auditoria-ea3-1
+pedidos360-auditoria-ea3 pedidos360.alertas 2          5               5               0               consumer-pedidos360-auditoria-ea3-1-bd307755-1eb6-428f-b161-cd20ee6e9dea /172.21.0.1     consumer-pedidos360-auditoria-ea3-1
+PRUEBA CORRECTA: rechazos en DLT y ambos eventos validos posteriores confirmados en el log.

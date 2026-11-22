@@ -13,7 +13,7 @@ Se contrastaron las pautas EP5 (encargo, 12% de la asignatura) y EP6 (presentaci
 | Administrador de componentes Kafka | 6% | Creacion, listado, consulta, actualizacion de retencion y cleanup, y eliminacion implementados. PATCH probado con consulta antes/despues y rechazo de retencion invalida. |
 | Productores y serializers | 14% | Productor de pedidos y productor de alertas probados; no hay outbox ni atomicidad con la base de datos. |
 | Consumidores y separación de dominio | 14% | Listeners separados de PedidoAlertaService y AlertaAuditoriaService; procesamiento normal observado. |
-| Manejo de errores | 12% | Validación y detención por registro inválido probadas. Reintentos configurados; agotamiento por fallo transitorio sin prueba registrada. El listener detenido requiere intervención. |
+| Manejo de errores | 12% | Validacion y deserializacion con recuperacion DLT probadas; eventos validos posteriores procesados sin detener consumidores. Tres reintentos configurados; agotamiento transitorio sin prueba registrada. |
 | Retención, cleanup, particiones y réplicas | 12% | Dos tópicos P3/RF3, minISR2; retenciones 7 y 28 días y política delete inspeccionadas. |
 | Consumer groups y distribución resiliente | 12% | Dos instancias con reparto 2+1; tras parada controlada, una asumió las tres particiones. No prueba caída abrupta de broker o equipo. |
 | Operaciones repetibles sobre tópicos y grupos | 6% | API de creación/inspección/eliminación y CLI de grupos utilizadas. Actualizacion de retencion y cleanup mediante PATCH probada sobre un topico temporal. |
@@ -59,7 +59,7 @@ La presentación debe durar entre cinco y diez minutos. Aunque se realiza en gru
 - Ambos archivos RabbitMQ del evento contenían los mismos datos del pedido.
 - Caso sintético total 500: válido, sin alerta.
 - Caso sintético total 15000: alerta ALTA.
-- Caso sintético total -1: listener detenido y lag 1. Su omisión posterior mediante reset de offset fue una intervención sobre datos de ensayo, no un reprocesamiento exitoso del mensaje.
+- Prueba historica: total -1 detuvo el listener y requirio intervencion. Correccion del 22 de noviembre: pedido invalido, JSON malformado y alerta invalida conservados en DLT; eventos validos posteriores procesados. Evidencias en docs/KAFKA_DLT.md.
 - API Kafka: 200, 201, 204, 400, 401, 404 y 409 según operación documentada.
 - API Gateway: consultas productos/pedidos 200; solicitud sin token 401; preflight CORS 204.
 
