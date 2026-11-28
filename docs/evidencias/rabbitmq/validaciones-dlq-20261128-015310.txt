@@ -1,0 +1,5 @@
+DLQ vacia : HTTP 204
+Tipo inexistente : HTTP 400
+Sin token : HTTP 401
+Token alterado : HTTP 401
+VALIDACIONES CORRECTAS

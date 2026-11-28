@@ -1,0 +1,10 @@
+PRUEBA RABBIT ADMIN - 2026-11-28T01:44:54
+POST /queues : HTTP 201
+POST /exchanges : HTTP 201
+POST /bindings : HTTP 201
+Consulta confirmada: {"consumers":0,"name":"pedidos360.prueba-eft-21f4aa5d7f","messages":0}
+DELETE /bindings : HTTP 204
+DELETE /queues/pedidos360.prueba-eft-21f4aa5d7f : HTTP 204
+DELETE /exchanges/pedidos360.prueba-eft-21f4aa5d7f.exchange : HTTP 204
+Consulta posterior a eliminacion: HTTP 404
+PRUEBA CORRECTA: operaciones completadas.

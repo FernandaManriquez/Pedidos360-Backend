@@ -1,0 +1,58 @@
+COLA: pedidos360.tickets.dlq
+HTTP: 200
+MENSAJES: 2 -> 1
+RESPALDO: C:\Users\kamik\Downloads\Pedidos360-Backend\servicioNotificaciones\.\output\dlq\tickets\a72a701a-e0a9-4e24-bddd-5d5cde43a140.txt
+fecha=2026-11-28T04:51:52.203675400Z
+cola=pedidos360.tickets.dlq
+exchange=pedidos360.dlx
+routingKey=tickets.dead
+headers={x-first-death-exchange=pedidos360.eventos, x-last-death-reason=rejected, x-death=[{reason=rejected, count=1, exchange=pedidos360.eventos, time=Fri Oct 16 12:16:18 CLST 2026, routing-keys=[pedido.creado], queue=pedidos360.tickets}], x-first-death-reason=rejected, x-first-death-queue=pedidos360.tickets, x-last-death-queue=pedidos360.tickets, x-last-death-exchange=pedidos360.eventos}
+payloadBase64=ew0KICAiZXZlbnRJZCI6ICIyMjIyMjIyMi0yMjIyLTQyMjItODIyMi0yMjIyMjIyMjIyMjIiLA0KICAicGVkaWRvSWQiOiAyLA0KICAidXN1YXJpbyI6ICJwcnVlYmEtZGxxIiwNCiAgInByb2R1Y3RvSWQiOiAxLA0KICAiY2FudGlkYWQiOiAwLA0KICAidG90YWwiOiAxMDAwMCwNCiAgImVzdGFkbyI6ICJQRU5ESUVOVEUiLA0KICAiZmVjaGEiOiAiMjAyNi0xMC0xNlQxMjoxNTowMCINCn0=
+contenidoUTF8=
+{
+  "eventId": "22222222-2222-4222-8222-222222222222",
+  "pedidoId": 2,
+  "usuario": "prueba-dlq",
+  "productoId": 1,
+  "cantidad": 0,
+  "total": 10000,
+  "estado": "PENDIENTE",
+  "fecha": "2026-10-16T12:15:00"
+}
+
+COLA: pedidos360.notificaciones.dlq
+HTTP: 200
+MENSAJES: 2 -> 1
+RESPALDO: C:\Users\kamik\Downloads\Pedidos360-Backend\servicioNotificaciones\.\output\dlq\notificaciones\85428779-3908-4905-9555-804c1dd1a43b.txt
+fecha=2026-11-28T04:51:52.570906100Z
+cola=pedidos360.notificaciones.dlq
+exchange=pedidos360.dlx
+routingKey=notificaciones.dead
+headers={x-first-death-exchange=pedidos360.eventos, x-last-death-reason=rejected, x-death=[{reason=rejected, count=1, exchange=pedidos360.eventos, time=Fri Oct 16 12:16:18 CLST 2026, routing-keys=[pedido.creado], queue=pedidos360.notificaciones}], x-first-death-reason=rejected, x-first-death-queue=pedidos360.notificaciones, x-last-death-queue=pedidos360.notificaciones, x-last-death-exchange=pedidos360.eventos}
+payloadBase64=ew0KICAiZXZlbnRJZCI6ICIyMjIyMjIyMi0yMjIyLTQyMjItODIyMi0yMjIyMjIyMjIyMjIiLA0KICAicGVkaWRvSWQiOiAyLA0KICAidXN1YXJpbyI6ICJwcnVlYmEtZGxxIiwNCiAgInByb2R1Y3RvSWQiOiAxLA0KICAiY2FudGlkYWQiOiAwLA0KICAidG90YWwiOiAxMDAwMCwNCiAgImVzdGFkbyI6ICJQRU5ESUVOVEUiLA0KICAiZmVjaGEiOiAiMjAyNi0xMC0xNlQxMjoxNTowMCINCn0=
+contenidoUTF8=
+{
+  "eventId": "22222222-2222-4222-8222-222222222222",
+  "pedidoId": 2,
+  "usuario": "prueba-dlq",
+  "productoId": 1,
+  "cantidad": 0,
+  "total": 10000,
+  "estado": "PENDIENTE",
+  "fecha": "2026-10-16T12:15:00"
+}
+
+COLA: pedidos360.auditoria.dlq
+HTTP: 200
+MENSAJES: 1 -> 0
+RESPALDO: C:\Users\kamik\Downloads\Pedidos360-Backend\servicioNotificaciones\.\output\dlq\auditoria\1cd14442-714e-4fa1-8264-356e5da7bcb6.txt
+fecha=2026-11-28T04:51:52.623042600Z
+cola=pedidos360.auditoria.dlq
+exchange=pedidos360.dlx
+routingKey=auditoria.dead
+headers={x-first-death-exchange=pedidos360.eventos, x-last-death-reason=rejected, x-death=[{reason=rejected, count=1, exchange=pedidos360.eventos, time=Sun Nov 22 19:02:10 CLST 2026, routing-keys=[pedido.creado], queue=pedidos360.auditoria}], x-first-death-reason=rejected, x-first-death-queue=pedidos360.auditoria, x-last-death-queue=pedidos360.auditoria, x-last-death-exchange=pedidos360.eventos}
+payloadBase64=eyJwcm9kdWN0b0lkIjozLCJldmVudElkIjoiYTI0ODhlZjAtZjU1Yi00YjM3LWFjYzQtZTMxMmEwYTAwMmJkIiwiZmVjaGEiOiIyMDI2LTExLTIyVDE5OjAyOjA5IiwiY2FudGlkYWQiOjEsInVzdWFyaW8iOiJwcnVlYmEuZWEzIiwicGVkaWRvSWQiOjkwMDEwMiwidG90YWwiOi0xLCJlc3RhZG8iOiJQRU5ESUVOVEUifQ==
+contenidoUTF8=
+{"productoId":3,"eventId":"a2488ef0-f55b-4b37-acc4-e312a0a002bd","fecha":"2026-11-22T19:02:09","cantidad":1,"usuario":"prueba.ea3","pedidoId":900102,"total":-1,"estado":"PENDIENTE"}
+
+PRUEBA CORRECTA: las tres DLQ fueron auditadas y respaldadas.
