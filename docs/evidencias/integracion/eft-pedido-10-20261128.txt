@@ -1,0 +1,53 @@
+VERIFICACION EFT - 2026-11-28T02:35:13
+Pedido: 10
+Evento: 77caa414-9a26-43c2-b916-321fece55dfd
+
+CONSUMIDOR RABBITMQ: tickets
+TICKET DE PEDIDO
+
+Evento: 77caa414-9a26-43c2-b916-321fece55dfd
+Pedido: 10
+Usuario: EFT-Integracion-20261128
+Producto: 3
+Cantidad: 1
+Total: 45990
+Estado: PENDIENTE
+Fecha del pedido: 2026-11-28T02:30:38.252145300
+
+CONSUMIDOR RABBITMQ: notificaciones
+NOTIFICACION INTERNA DE PEDIDO CREADO
+
+Evento: 77caa414-9a26-43c2-b916-321fece55dfd
+Pedido: 10
+Usuario: EFT-Integracion-20261128
+Producto: 3
+Cantidad: 1
+Total: 45990
+Estado: PENDIENTE
+Fecha del pedido: 2026-11-28T02:30:38.252145300
+
+CONSUMIDOR RABBITMQ: auditoria
+AUDITORIA DE PEDIDO CREADO
+
+Evento: 77caa414-9a26-43c2-b916-321fece55dfd
+Pedido: 10
+Usuario: EFT-Integracion-20261128
+Producto: 3
+Cantidad: 1
+Total: 45990
+Estado: PENDIENTE
+Fecha del pedido: 2026-11-28T02:30:38.252145300
+
+GRUPO KAFKA: pedidos360-alertas-ea3
+
+GROUP                  TOPIC                    PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                            HOST            CLIENT-ID
+pedidos360-alertas-ea3 pedidos360.pedido-creado 0          2               2               0               consumer-pedidos360-alertas-ea3-2-e0b35a09-87ee-41de-ade3-ea63a7dd395b /172.21.0.1     consumer-pedidos360-alertas-ea3-2
+pedidos360-alertas-ea3 pedidos360.pedido-creado 1          2               2               0               consumer-pedidos360-alertas-ea3-2-e0b35a09-87ee-41de-ade3-ea63a7dd395b /172.21.0.1     consumer-pedidos360-alertas-ea3-2
+pedidos360-alertas-ea3 pedidos360.pedido-creado 2          5               5               0               consumer-pedidos360-alertas-ea3-2-e0b35a09-87ee-41de-ade3-ea63a7dd395b /172.21.0.1     consumer-pedidos360-alertas-ea3-2
+
+GRUPO KAFKA: pedidos360-auditoria-ea3
+
+GROUP                    TOPIC              PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                              HOST            CLIENT-ID
+pedidos360-auditoria-ea3 pedidos360.alertas 0          1               1               0               consumer-pedidos360-auditoria-ea3-1-7ed0a35c-c774-42d2-8c93-901999324c4e /172.21.0.1     consumer-pedidos360-auditoria-ea3-1
+pedidos360-auditoria-ea3 pedidos360.alertas 1          1               1               0               consumer-pedidos360-auditoria-ea3-1-7ed0a35c-c774-42d2-8c93-901999324c4e /172.21.0.1     consumer-pedidos360-auditoria-ea3-1
+pedidos360-auditoria-ea3 pedidos360.alertas 2          5               5               0               consumer-pedidos360-auditoria-ea3-1-7ed0a35c-c774-42d2-8c93-901999324c4e /172.21.0.1     consumer-pedidos360-auditoria-ea3-1

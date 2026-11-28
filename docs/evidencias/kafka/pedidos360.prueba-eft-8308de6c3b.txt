@@ -1,0 +1,107 @@
+﻿CREACION: HTTP 201
+ANTES:
+{
+    "retencionMs":  "604800000",
+    "politicaLimpieza":  "delete",
+    "nombre":  "pedidos360.prueba-eft-8308de6c3b",
+    "minInSyncReplicas":  "2",
+    "particiones":  [
+                        {
+                            "particion":  0,
+                            "lider":  1,
+                            "replicas":  [
+                                             1,
+                                             2,
+                                             3
+                                         ],
+                            "isr":  [
+                                        1,
+                                        2,
+                                        3
+                                    ]
+                        },
+                        {
+                            "particion":  1,
+                            "lider":  2,
+                            "replicas":  [
+                                             2,
+                                             3,
+                                             1
+                                         ],
+                            "isr":  [
+                                        2,
+                                        3,
+                                        1
+                                    ]
+                        },
+                        {
+                            "particion":  2,
+                            "lider":  3,
+                            "replicas":  [
+                                             3,
+                                             1,
+                                             2
+                                         ],
+                            "isr":  [
+                                        3,
+                                        1,
+                                        2
+                                    ]
+                        }
+                    ]
+}
+ACTUALIZACION: HTTP 200
+DESPUES:
+{
+    "retencionMs":  "86400000",
+    "politicaLimpieza":  "compact,delete",
+    "nombre":  "pedidos360.prueba-eft-8308de6c3b",
+    "minInSyncReplicas":  "2",
+    "particiones":  [
+                        {
+                            "particion":  0,
+                            "lider":  1,
+                            "replicas":  [
+                                             1,
+                                             2,
+                                             3
+                                         ],
+                            "isr":  [
+                                        1,
+                                        2,
+                                        3
+                                    ]
+                        },
+                        {
+                            "particion":  1,
+                            "lider":  2,
+                            "replicas":  [
+                                             2,
+                                             3,
+                                             1
+                                         ],
+                            "isr":  [
+                                        2,
+                                        3,
+                                        1
+                                    ]
+                        },
+                        {
+                            "particion":  2,
+                            "lider":  3,
+                            "replicas":  [
+                                             3,
+                                             1,
+                                             2
+                                         ],
+                            "isr":  [
+                                        3,
+                                        1,
+                                        2
+                                    ]
+                        }
+                    ]
+}
+CAMBIOS CONFIRMADOS MEDIANTE GET
+ELIMINACION TEMPORAL: HTTP 204
+PRUEBA KAFKA ADMIN CORRECTA
